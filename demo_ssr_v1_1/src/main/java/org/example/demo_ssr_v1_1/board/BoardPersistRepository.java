@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 // DB -- CRUD
 @RequiredArgsConstructor
 @Repository // IoC
@@ -20,5 +22,13 @@ public class BoardPersistRepository {
         entityManager.persist(board);
 
         return board;
+    }
+
+    // jpql
+    // 게시글 전체 조회
+    public List<Board> findAll() {
+        return entityManager.createQuery("SELECT b FROM Board b ORDER BY b.createdAt DESC")
+                .getResultList();
+
     }
 }
