@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.PageRequest;
 
 import java.sql.Timestamp;
 
@@ -30,4 +31,33 @@ public class Board {
         this.content = content;
         this.username = username;
     }
+
+    // Board 상태값 수정하는 로직
+    public void update(BoardRequest.UpdateDTO updateDTO) {
+        // 유효성 검사 처리
+        updateDTO.validate();
+
+        this.title = updateDTO.getTitle();
+        this.content = updateDTO.getContent();
+        this.username = updateDTO.getUsername();
+    }
+
+    // 개별 필드 수정 - title
+    public void updateTitle(String newTitle) {
+
+        if (newTitle == null || newTitle.trim().isEmpty()) {
+            throw new IllegalArgumentException("게시글의 제목은 공백일 수 없습니다");
+        }
+        this.title = newTitle;
+    }
+
+    // 개별 필드 수정 - content
+    public void updateContent(String newContent) {
+
+        if (newContent == null || newContent.trim().isEmpty()) {
+            throw new IllegalArgumentException("게시글의 내용을 필히 입력해주세요.");
+        }
+        this.content = newContent;
+    }
+
 }
