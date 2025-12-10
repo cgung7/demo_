@@ -50,7 +50,7 @@ public class BoardController {
 
         List<Board> boardList = boardPersistRepository.findAll();
         model.addAttribute("boardList", boardList);
-        System.out.println(boardList.stream().toList());
+
         return "board/list";
     }
 }

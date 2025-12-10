@@ -24,4 +24,10 @@ public class Board {
     // pc --> db
     @CreationTimestamp
     private Timestamp createdAt;
+
+    public Board(String title, String content, String username) {
+        this.title = title;
+        this.content = content;
+        this.username = username;
+    }
 }
