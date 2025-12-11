@@ -50,6 +50,7 @@ public class UserRepository {
     }
 
     // 회원가입
+    @Transactional
     public User save(User user) {
         em.persist(user);
 
