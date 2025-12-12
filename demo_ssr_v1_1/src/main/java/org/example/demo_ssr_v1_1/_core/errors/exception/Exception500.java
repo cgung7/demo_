@@ -1,0 +1,11 @@
+package org.example.demo_ssr_v1_1._core.errors.exception;
+
+/**
+ * 500 Internal Server Error 내부 서버 오류
+ */
+public class Exception500 extends RuntimeException {
+
+    public Exception500(String msg) {
+        super(msg);
+    }
+}
