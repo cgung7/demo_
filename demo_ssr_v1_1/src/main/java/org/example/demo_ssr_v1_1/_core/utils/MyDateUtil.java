@@ -1,4 +1,4 @@
-package org.example.demo_ssr_v1_1.utils;
+package org.example.demo_ssr_v1_1._core.utils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
