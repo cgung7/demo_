@@ -33,9 +33,7 @@ public class BoardController {
 
         // 인증 검사 O
         User sessionUser = (User)session.getAttribute("sessionUser"); // sessionUser -> 상수
-        if (sessionUser == null) {
-            throw new Exception401("로그인 먼저 해주세요.");
-        }
+
         // 인가 검사 O
         Board board = repository.findById(id);
         if (board == null) {
@@ -65,9 +63,6 @@ public class BoardController {
     ) {
         // 1. 인증 처리 O
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("로그인 먼저 해주세요.");
-        }
 
         // 2. 인가 처리 O
         Board board =repository.findById(id);
@@ -108,9 +103,7 @@ public class BoardController {
     public String saveForm(HttpSession session) {
         // 인증 처리
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("로그인 먼저 해주세요.");
-        }
+
         return "board/save-form";
     }
 
@@ -126,9 +119,6 @@ public class BoardController {
         // 스프링이 처리 : new SaveDTO(), setter 메서드 호충해서 값을 넣어줌
         // 인증 처리
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("로그인 먼저 해주세요.");
-        }
 
         Board board = saveDTO.toEntity(sessionUser);
 
@@ -167,9 +157,7 @@ public class BoardController {
     public String delete(@PathVariable Long id, HttpSession session) {
         // 1. 인증처리 O
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            throw new Exception401("로그인 먼저 해주세요.");
-        }
+        
         // 2. 인가처리 O + || 관리자 권한
 //        if (!board.getUser().getId().equals(sessionUser.getId())) {
 //            System.out.println("게시글 권한이 없습니다.");

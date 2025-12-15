@@ -1,6 +1,5 @@
 package org.example.demo_ssr_v1_1.user;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception403;
@@ -27,11 +26,7 @@ public class UserController {
         // 1. 인증 검사 (O)
         // 인증 검사를 할려면 세션 메모리에 접근해서 사용자의 정보 존재 여부 확인
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            System.out.println("로그인하지 않은 사용자입니다.");
-
-            return "redirect:/user/login";
-        }
+        // LoginInterceptor 가 알아서 처리
 
         // 2. 인가 처리
         // 로그인 사용자 확인 O
@@ -56,11 +51,12 @@ public class UserController {
     public String updateProc(UserRequest.UpdateDTO updateDTO, HttpSession session) {
         // 1. 인증 검사
         User sessionUser = (User)session.getAttribute("sessionUser");
-        if (sessionUser == null) {
-            System.out.println("로그인 하지 않은 사용자 접근입니다.");
-
-            return "redirect:/login";
-        }
+        // LoginInterceptor 가 알아서 처리
+//        if (sessionUser == null) {
+//            System.out.println("로그인 하지 않은 사용자 접근입니다.");
+//
+//            return "redirect:/login";
+//        }
         // +) 인가 차리 (DB 정보 조회)
         User user = userRepository.findById(sessionUser.getId());
 
