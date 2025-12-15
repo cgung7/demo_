@@ -2,7 +2,6 @@ package org.example.demo_ssr_v1_1.board;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception401;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception403;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception404;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception500;
@@ -157,7 +156,7 @@ public class BoardController {
     public String delete(@PathVariable Long id, HttpSession session) {
         // 1. 인증처리 O
         User sessionUser = (User)session.getAttribute("sessionUser");
-        
+
         // 2. 인가처리 O + || 관리자 권한
 //        if (!board.getUser().getId().equals(sessionUser.getId())) {
 //            System.out.println("게시글 권한이 없습니다.");
