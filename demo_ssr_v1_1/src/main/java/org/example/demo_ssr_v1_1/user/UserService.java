@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
+    // 객체 지향 개념 --> SOLID 원칙
+    // DIP - 추상화가 높은 녀석을 선언하는 것이 좋음
     private final UserRepository userRepository;
 
     @Transactional
@@ -54,7 +56,7 @@ public class UserService {
             throw new Exception400("사용자명 또는 비밀번호가 일치하지 않습니다.");
         }
 
-        return userEntity;
+        return  userRepository.save(userEntity);
     }
 
     public User 회원정보수정화면(Long userId) {

@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // - Username: 엔티티의 username 필드명 일치
     // - Optional<User> : 결과가 없을 수 있으므로 Optional 반환
 
+
+    // 쿼리 메서드 네이밍 (자동 쿼리 생성)
     Optional<User> findByUsername(String username);
     Optional<User> findByUsernameAndPassword(String username, String password);
     // SELECT * FROM user_tb WHERE username = ? AND password = ?
