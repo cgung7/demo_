@@ -2,16 +2,12 @@ package org.example.demo_ssr_v1_1.board;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception403;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception404;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception500;
 import org.example.demo_ssr_v1_1.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.List;
 

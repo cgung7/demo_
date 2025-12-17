@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //      > 단 특정 URL은 제외
         registry.addInterceptor(loginInterceptor)
                 // /** < 모든 URL 제외 대상으로 개발 시 사용 X
-                .addPathPatterns("/board/**", "/user/**")
+                .addPathPatterns("/board/**", "/user/**", "reply/**")
                 .excludePathPatterns(
                         "/login",
                         "/join",
