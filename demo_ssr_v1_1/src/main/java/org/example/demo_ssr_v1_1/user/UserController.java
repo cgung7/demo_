@@ -2,6 +2,7 @@ package org.example.demo_ssr_v1_1.user;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.demo_ssr_v1_1._core.errors.exception.Exception401;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -115,8 +116,8 @@ public class UserController {
             session.setAttribute("sessionUser", sessionUser);
             return "redirect:/";
         } catch (Exception e) {
+            throw new Exception401("아이디/비밀번호가 일치하지 않습니다.");
             // 로그인 실패 시 다시 로그인 화면 전환
-            return "user/login-form";
         }
     }
 

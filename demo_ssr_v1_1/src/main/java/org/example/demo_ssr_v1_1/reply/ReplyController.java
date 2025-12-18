@@ -34,7 +34,7 @@ public class ReplyController {
     }
 
     @PostMapping("/reply/{id}/delete")
-    public String deleteProc(@PathVariable Long replyId, HttpSession session) {
+    public String deleteProc(@PathVariable(name = "id") Long replyId, HttpSession session) {
         // 1. 인증 검사
         User sessionUser = (User)session.getAttribute("sessionUser");
         // 2. 댓글 삭제 서비스 요청
