@@ -1,8 +1,6 @@
 package org.example.demo_ssr_v1_1.admin;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception401;
-import org.example.demo_ssr_v1_1._core.errors.exception.Exception403;
 import org.example.demo_ssr_v1_1.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
