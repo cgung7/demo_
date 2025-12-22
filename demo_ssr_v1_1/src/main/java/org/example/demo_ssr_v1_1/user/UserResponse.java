@@ -8,7 +8,7 @@ import lombok.Data;
 public class UserResponse {
 
     /**
-     * 회원 정보 수정화면 DTO
+     * 회원 정보 수정 화면 DTO
      */
     @Data
     public static class UpdateFormDTO {
@@ -21,12 +21,12 @@ public class UserResponse {
             this.username = user.getUsername();
             this.email = user.getEmail();
         }
-    } // end if static inner class
+    } // end of static inner class
 
     /**
-     * 로그인 응답 DTO (세션 저장용)
-     * - 세션에 엔티티 정보를 저장하지만
-     * 다를 곳으로 전달할 때는 DTO를 사용하는 것을 권장 사항
+     *  로그인 응답 DTO (세션 저장용)
+     *  - 세션에 엔티티 정보를 저장하지만
+     *  다른 곳으로 전달 할 때는 DTO를 사용하는 것이 권장 사항이다.
      */
     @Data
     public static class LoginDTO {
@@ -40,4 +40,7 @@ public class UserResponse {
             this.email = user.getEmail();
         }
     }
+
 }
+
+

@@ -8,13 +8,15 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
-@Data
+// 엔티티 화면 보고 설계해 보세요.
 @NoArgsConstructor
+@Data
 @Table(name = "user_tb")
 @Entity
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -25,21 +27,28 @@ public class User {
     @CreationTimestamp
     private Timestamp createdAt;
 
+    //@Column(nullable = false)
+    private String profileImage; // 추가
+
     @Builder
-    public User(Long id, String username, String password, String email, Timestamp createdAt) {
+    public User(Long id, String username, String password,
+                String email, Timestamp createdAt, String profileImage) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
+        this.profileImage = profileImage;  // 추가
     }
 
     // 회원정보 수정 비즈니스 로직 추가
+    // 추후 DTO  설계
     public void update(UserRequest.UpdateDTO updateDTO) {
         // 유효성 검사
         updateDTO.validate();
         this.password = updateDTO.getPassword();
-
+        // 추가
+        this.profileImage = updateDTO.getProfileImageFilename();
         // 더티 체킹 (변경 감지)
         // 트랜잭션이 끝나면 자동으로 update 쿼리 진행
     }
@@ -48,4 +57,5 @@ public class User {
     public boolean isOwner(Long userId) {
         return this.id.equals(userId);
     }
+
 }

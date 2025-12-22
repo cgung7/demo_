@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Transactional(readOnly = true)
 public class ReplyService {
 
@@ -25,13 +25,12 @@ public class ReplyService {
     // 댓글 목록 조회
     /**
      * OSIV 대응하기 위해 DTO 설계, 계층간 결합도를 줄이기 위해 설계
-     * - JOIN FETCH로 한번에 User를 들고옴
+     * - JOIN FETCH 로 한번에 User를 들고 왔다.
+     *
      */
     public List<ReplyResponse.ListDTO> 댓글목록조회(Long boardId, Long sessionUserId) {
-
-        // 조회를 했기 때문에 1차 캐쉬에 들어간 상태 -> 즉 영속화 되어 있음
+        // 조회를 했기 때문에 1차 캐쉬에 들어간 생태 -> 즉 영속화 되어 있음
         List<Reply> replyList = replyRepository.findByBoardIdWithUser(boardId);
-
         return replyList.stream()
                 .map(reply -> new ReplyResponse.ListDTO(reply, sessionUserId))
                 .collect(Collectors.toList());
@@ -40,14 +39,12 @@ public class ReplyService {
     // 댓글 작성
     @Transactional
     public Reply 댓글작성(ReplyRequest.SaveDTO saveDTO, Long sessionUserId) {
-        // 조회로 board는 영속화 상태
         Board boardEntity = boardRepository.findById(saveDTO.getBoardId())
-                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
         User userEntity = userRepository.findById(sessionUserId)
-                .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다"));
 
-        // 비영속 상태
         Reply reply = saveDTO.toEntity(boardEntity, userEntity);
 
         return replyRepository.save(reply);
@@ -56,21 +53,14 @@ public class ReplyService {
     // 댓글 삭제
     @Transactional
     public Long 댓글삭제(Long replyId, Long sessionUserId) {
-        // 댓글 조회 (findById(replyId)) --> LAZY 때문에 댓글 작성자 정보 X
         Reply replyEntity = replyRepository.findByIdWithUser(replyId)
-                .orElseThrow(() -> new Exception404("댓글을 찾을 수 없습니다."));
-
-        //  -> 소유자 확인 때문에 댓글 작성자 정보 필요
-        // 권한 체크
-        if (!replyEntity.isOwner(sessionUserId)) {
-             throw new Exception403("댓글 삭제 권한이 없습니다.");
+                .orElseThrow(() -> new Exception404("댓글을 찾을 수 없습니다"));
+        if(!replyEntity.isOwner(sessionUserId)) {
+            throw new Exception403("댓글 삭제 권한이 없습니다");
         }
         Long boardId = replyEntity.getBoard().getId();
-
-        // 댓글 삭제 처리
         replyRepository.delete(replyEntity);
-        // 컨트롤러 단에서 리다이렉트 처리해서 다시 게시글 상세보기 호출
-        // -> board id 값
         return boardId;
     }
+
 }

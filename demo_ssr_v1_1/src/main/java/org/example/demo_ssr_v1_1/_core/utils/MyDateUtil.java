@@ -1,12 +1,12 @@
 package org.example.demo_ssr_v1_1._core.utils;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
 public class MyDateUtil {
 
-    // 정적 변수로 포맷터를 선언 - 성능향상
+    // 정적 변수로 포맷터를 선언해두면 성능상 더 유리합니다.
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static String timestampFormat(Timestamp time) {
@@ -17,4 +17,3 @@ public class MyDateUtil {
         return time.toLocalDateTime().format(FORMATTER);
     }
 }
-// orm jpa 표준 하이버네트 영속성 컨텍스

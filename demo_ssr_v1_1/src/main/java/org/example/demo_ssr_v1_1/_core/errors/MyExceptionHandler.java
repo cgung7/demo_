@@ -11,89 +11,109 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 // @ControllerAdvice - 모든 컨트롤러에서 발생하는 예외를 이 클래스에서 중앙 집중화 시킴
-// RestControllerAdvice = @ControllerAdvice + @ResponseBody
-@RestControllerAdvice
+// @RestControllerAdvice = @ControllerAdvice + @ResponseBody
+@ControllerAdvice
 @Slf4j
 public class MyExceptionHandler {
 
     // 내가 지켜볼 예외를 명시를 해주면 ControllerAdvice 가 가지고와 처리 함
     @ExceptionHandler(Exception400.class)
-    @ResponseBody
-    public ResponseEntity<String> ex400(Exception400 e) {
-        String script = "<script>alert('"+e.getMessage()+"');" +
-                "history.back();" +
-                "</script>";
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.TEXT_HTML)
-                .body(script);
+    public String ex400(Exception400 e, HttpServletRequest request) {
+        log.warn("=== 400 에러 발생  ===");
+        log.warn("요청 URL : {}", request.getRequestURL());
+        log.warn("에러 메세지 : {}", e.getMessage());
+        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+        request.setAttribute("msg", e.getMessage());
+        return "err/400";
     }
 
     // 401 인증 오류
+//    @ExceptionHandler(Exception401.class)
+//    public String ex401(Exception401 e, HttpServletRequest request, Model model) {
+//        log.warn("=== 401 에러 발생  ===");
+//        log.warn("요청 URL : {}", request.getRequestURL());
+//        log.warn("에러 메세지 : {}", e.getMessage());
+//        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+//        //request.setAttribute("msg", e.getMessage());
+//        model.addAttribute("msg", e.getMessage());
+//        return "err/401";
+//    }
     @ExceptionHandler(Exception401.class)
     @ResponseBody
     public ResponseEntity<String> ex401(Exception401 e) {
-        String script = "<script>alert('"+e.getMessage()+"');" +
-                "history.back();" +
+        String script = "<script>" +
+                "alert('" + e.getMessage() +"');" +
+                "location.href = '/login';" +
                 "</script>";
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .contentType(MediaType.TEXT_HTML)
                 .body(script);
     }
 
     // 403 인가 오류
+//    @ExceptionHandler(Exception403.class)
+//    public String ex401(Exception403 e, HttpServletRequest request) {
+//        log.warn("=== 403 에러 발생  ===");
+//        log.warn("요청 URL : {}", request.getRequestURL());
+//        log.warn("에러 메세지 : {}", e.getMessage());
+//        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+//        request.setAttribute("msg", e.getMessage());
+//        return "err/403";
+//    }
+
     @ExceptionHandler(Exception403.class)
     @ResponseBody
-    public ResponseEntity<String> ex403(Exception403 e) {
+    public ResponseEntity<String> ex403(Exception403 e, HttpServletRequest request) {
         String script = "<script>alert('"+e.getMessage()+"');" +
                 "history.back();" +
                 "</script>";
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .contentType(MediaType.TEXT_HTML)
                 .body(script);
     }
 
-    // 404 인가 오류
-    @ExceptionHandler(Exception404.class)
-    @ResponseBody
-    public ResponseEntity<String> ex404(Exception404 e) {
-        String script = "<script>alert('"+e.getMessage()+"');" +
-                "history.back();" +
-                "</script>";
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.TEXT_HTML)
-                .body(script);
+    // 404 인가 오류
+    // 템플릿 파일에서 세션 정보와 / Request 객체를 바로 접근 못하기 막았음 (기본값)
+    @ExceptionHandler(Exception404.class)
+    public String ex404(Exception404 e, HttpServletRequest request, Model model) {
+        log.warn("=== 404 에러 발생  ===");
+        log.warn("요청 URL : {}", request.getRequestURL());
+        log.warn("에러 메세지 : {}", e.getMessage());
+        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+        //request.setAttribute("msg", e.getMessage());
+        model.addAttribute("msg", e.getMessage());
+        return "err/404";
     }
 
     // 500 서버 내부 오류
     @ExceptionHandler(Exception500.class)
-    @ResponseBody
-    public ResponseEntity<String> ex500(Exception500 e) {
-        String script = "<script>alert('"+e.getMessage()+"');" +
-                "history.back();" +
-                "</script>";
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.TEXT_HTML)
-                .body(script);
+    public String ex500(Exception500 e, HttpServletRequest request) {
+        log.warn("=== 500 에러 발생  ===");
+        log.warn("요청 URL : {}", request.getRequestURL());
+        log.warn("에러 메세지 : {}", e.getMessage());
+        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+        request.setAttribute("msg", e.getMessage());
+        return "err/500";
     }
 
     // 기타 모든 실행시점 오류 처리
     @ExceptionHandler(RuntimeException.class)
-    @ResponseBody
-    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        String script = "<script>alert('"+e.getMessage()+"');" +
-                "history.back();" +
-                "</script>";
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.TEXT_HTML)
-                .body(script);
+    public String handleRuntimeException(RuntimeException e,
+                                         HttpServletRequest request) {
+        log.warn("=== 예상하지 못한 에러 발생  ===");
+        log.warn("요청 URL : {}", request.getRequestURL());
+        log.warn("에러 메세지 : {}", e.getMessage());
+        log.warn("예외 클래스 : {}", e.getClass().getSimpleName());
+        request.setAttribute("msg", e.getMessage());
+        return "err/500";
     }
+
+
+
 }

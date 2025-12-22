@@ -2,6 +2,7 @@ package org.example.demo_ssr_v1_1.board;
 
 import lombok.Data;
 import org.example.demo_ssr_v1_1._core.utils.MyDateUtil;
+import org.example.demo_ssr_v1_1.user.User;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class BoardResponse {
             // 쿼리 --> JOIN FETCH 로 가져오면 문제 없음
             if(board.getUser() != null) {
                 System.out.println("test11");
-                this.username = board.getUser().getUsername();
+               this.username = board.getUser().getUsername();
             }
             // 날짜 포맷팅
             if(board.getCreatedAt() != null) {
@@ -55,8 +56,8 @@ public class BoardResponse {
             this.content = board.getContent();
             // JOIN FETCH 활용 (한번에 JOIN 에서 Repository 에서 가지고 올 예정)
             if(board.getUser() != null) {
-                this.userId = board.getUser().getId();
-                this.username = board.getUser().getUsername();
+               this.userId = board.getUser().getId();
+               this.username = board.getUser().getUsername();
             }
             // 날짜 포맷팅
             if(board.getCreatedAt() != null) {

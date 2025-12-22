@@ -12,7 +12,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service // IoC 대상 @Component 의 특수 형태
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BoardService {
@@ -28,33 +33,30 @@ public class BoardService {
      */
     public BoardResponse.PageDTO 게시글목록조회(int page, int size, String keyword) {
 
-        // page는 0부터 시작
-        // 상한선 제한
-        // size는 기본값 5, 최소, 최대 50 제한
-        // 페이지 번호가 음수가 되는 것을 막음
+        //** 상한선 제한 **
+        // size 는 기본값 5, 최소 1, 최대 50으로 제한
+        // 페이지 번호가 음수가 되는 것을 막습니다.
         int validPage = Math.max(0, page); // 양수값 보장
-        // 최대값 제한 // 최대값 50으로 보장
-        // 최소값 제한 //          1, 50 (양수값 보장) 최소값
+        // 최대값 제한    // 최대값 제한 50으로 보장
+        // 최소값 제한    //  1 , -50 (양수값 보장) 최소값
         int validSize = Math.max(1, Math.min(50, size));
 
-        // 정렬 기준
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        // 정렬기준
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt" );
         Pageable pageable = PageRequest.of(validPage, validSize, sort);
-        // []
+        // [ ..스프링...  ]  [검색][초기화]
 
         Page<Board> boardPage;
         if (keyword != null && !keyword.trim().isEmpty()) {
             boardPage = boardRepository.findByTitleContainingOrContentContaining(keyword.trim(), pageable);
         } else {
-            boardPage =  boardRepository.findAllWithUserOrderByCreatedAtDesc(pageable);
-
+            boardPage = boardRepository.findAllWithUserOrderByCreatedAtDesc(pageable);
         }
-        return new BoardResponse.PageDTO(boardPage);
 
-//        return boardList.stream()
-//                .map(BoardResponse.ListDTO::new)
-//                .collect(Collectors.toList());
+
+        return new BoardResponse.PageDTO(boardPage);
     }
+
 
 //    /**
 //     * 게시글 목록 조회
@@ -63,36 +65,33 @@ public class BoardService {
 //     * @return 게시글 목록 (생성일 기준으로 내림차순)
 //     */
 //    public List<BoardResponse.ListDTO> 게시글목록조회() {
-//        // 자바 문법
-//        // 데이터 타입 변환 작업
+//        // 자바문법
+//        // 데이터 타입을 변환 해서 맞춰 주어야 한다.
 //        List<Board> boardList = boardRepository.findAllWithUserOrderByCreatedAtDesc();
-//        // List<Board> --> List<BoardResponse.ListDTO>
-//        /** 1. 반복문
-//            List<BoardResponse.ListDTO> dtoList = new ArrayList<>();
-//            for (Board board : boardList) {
-//                BoardResponse.ListDTO dto = new BoardResponse.ListDTO(board);
-//                dtoList.add(dto);
-//            }
+//        // List<Board> ---> List<BoardResponse.ListDTO>
+//        // 1. 반복문
+////        List<BoardResponse.ListDTO> dotList = new ArrayList<>();
+////        for(Board board : boardList) {
+////            BoardResponse.ListDTO dto = new BoardResponse.ListDTO(board);
+////            dotList.add(dto);
+////        }
 //
-//            return dtoList;
-//         */
-//
-//        /** 2. 람다 표현식
-//        return boardList.stream()
-//                .map(board -> new BoardResponse.ListDTO(board))
-//                .collect(Collectors.toList());
-//         */
+//        // 2. 람다 표현식
+////        return boardList.stream()
+////                .map(board -> new BoardResponse.ListDTO(board))
+////                .collect(Collectors.toList());
 //
 //        // 3. 참조 메서드
 //        return boardList.stream()
 //                .map(BoardResponse.ListDTO::new)
 //                .collect(Collectors.toList());
+//        //return dotList;
 //    }
 
     public BoardResponse.DetailDTO 게시글상세조회(Long boardId) {
 
         Board board = boardRepository.findByIdWithUser(boardId)
-                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없어요"));
 
         return new BoardResponse.DetailDTO(board);
     }
@@ -101,59 +100,61 @@ public class BoardService {
     // 2. repository 저장 처리
     @Transactional
     public Board 게시글작성(BoardRequest.SaveDTO saveDTO, User sessionUser) {
-        // DTO 에서 직접 new 해서 생성한 Board 객체일 뿐 아직 영속화 된 객체는 아니다.
+        // DTO 에서 직접 new 해서 생성한 Board 객체 일 뿐 아직 영속화 된 객체는 아니다!!
         Board board = saveDTO.toEntity(sessionUser);
-
         boardRepository.save(board);
         return board;
     }
     // 1. 게시글 조회
     // 2. 인가 처리
     public BoardResponse.UpdateFormDTO 게시글수정화면(Long boardId, Long sessionUserId) {
-        // 1.
+        // 1
         Board boardEntity = boardRepository.findByIdWithUser(boardId)
-                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-
-        // 2.
-        if (!boardEntity.isOwner(sessionUserId)) {
-            throw new Exception403("게시글 수정 권한이 없습니다.");
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
+        // 2 인가 처리
+        if(!boardEntity.isOwner(sessionUserId)) {
+            throw new Exception403("게시글 수정 권한이 없습니다");
         }
-
         return new BoardResponse.UpdateFormDTO(boardEntity);
     }
 
     // 1. 트랜잭션 처리
-    // 2. 더티 체킹 -> DB 에서 조회
+    // 2. DB 에서 조회
     // 3. 인가 처리
-    // 4. 조회된 board에 상태값 변경 (더티 체킹)
+    // 4. 조회된 board 에 상태값 변경 (더티 체킹)
     @Transactional
     public Board 게시글수정(BoardRequest.UpdateDTO updateDTO, Long boardId, Long sessionUserId) {
-        // 2.
+
+        // 2 (조회부터 해야 DB에 있는 Board 에 user_id 값을 확인 할 수 있음)
         Board boardEntity = boardRepository.findById(boardId)
-                .orElseThrow(() -> new Exception404("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
+
         // 3.
-        if (!boardEntity.isOwner(sessionUserId)) {
-            throw new Exception403("게시글 수정 권한이 없습니다.");
+        if(!boardEntity.isOwner(sessionUserId)) {
+            throw new Exception403("게시글 수정 권한이 없습니다");
         }
         // 4.
-        boardEntity.update(updateDTO);
+        boardEntity.update(updateDTO); // 상태값 변경
         return boardEntity;
     }
+
     // 1. 트랜잭션 처리
     // 2. 게시글 조회
     // 3. 인가 처리
     // 4. Repository 에게 삭제 요청
     @Transactional
     public void 게시글삭제(Long boardId, Long sessionUserId) {
-        // 2.
-        Board boardEntity = boardRepository.findById(boardId)
-                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-        // 3.
-        if (!boardEntity.isOwner(sessionUserId)) {
-            throw new Exception403("게시글 삭제할 권한이 없습니다.");
-        }
-        replyRepository.deleteByBoardId(boardId);
-        // 4.
-        boardRepository.deleteById(boardId); // 제약 오류 발생(댓글)
+        // 2 (조회부터 해야 DB에 있는 Board 에 user_id 값을 확인 할 수 있음)
+       Board boardEntity = boardRepository.findById(boardId)
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
+       // 3
+       if(!boardEntity.isOwner(sessionUserId)) {
+           throw new Exception403("삭제 권한이 없습니다");
+       }
+       // 게시글 삭제 시 제약 오류 발생 하기 때문에 댓글 부터 삭제 후 게시글 삭제 처리 해야 함
+       replyRepository.deleteByBoardId(boardId);
+       // 4
+       boardRepository.deleteById(boardId);
     }
+
 }
