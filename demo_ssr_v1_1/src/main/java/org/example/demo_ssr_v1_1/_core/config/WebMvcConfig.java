@@ -2,6 +2,7 @@ package org.example.demo_ssr_v1_1._core.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.demo_ssr_v1_1._core.interceptor.AdminInterceptor;
 import org.example.demo_ssr_v1_1._core.interceptor.LoginInterceptor;
 import org.example.demo_ssr_v1_1._core.interceptor.SessionInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // DI 처리
     private final LoginInterceptor loginInterceptor;
     private final SessionInterceptor sessionInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
     // ps. 인터셉터는 당연히 여러개 등록 가능 함...
     @Override
@@ -40,7 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //    -> 단, 특정 URL 은 제외 시킬꺼야
         registry.addInterceptor(loginInterceptor)
                 // /** <-- 모든 URL 제외 대상이 됨. 일단 사용 안함
-                .addPathPatterns("/board/**", "/user/**", "/reply/**")
+                .addPathPatterns("/board/**", "/user/**", "/reply/**", "/admin/**")
                 .excludePathPatterns(
                         "/login",
                         "/join",
@@ -57,6 +59,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // ||d+ 는 정규표현식으로 1개 이상의 숫자를 의미한다. 
                 // /board/1, board/1234 <-- 허용 
                 // /board/abc 같은 경우 매칭 되지 않음
+
+        registry.addInterceptor(adminInterceptor)
+                // 관리자 전용 페이지에만 적용처리
+                .addPathPatterns("/admin/**");
     }
 
     /**
