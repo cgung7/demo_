@@ -143,4 +143,11 @@ public class User {
         // 아니면 (로컬이미지) 폴터 경로 붙여서 리턴
         return "images/" + this.profileImage;
     }
+
+    // true / false
+    public boolean isLocal() {
+        // LOCAL -> true
+        // KAKAO -> false
+        return this.provider == OAuthProvider.LOCAL;
+    }
 }
