@@ -28,11 +28,6 @@ public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${oauth2.kakao.client-id}")
-    private String clientId;
-
-    @Value("${tenco.key}")
-    private String tencoKey;
 
     @GetMapping("/user/kakao")
     public String kakaoCallback(@RequestParam(name = "code") String code, HttpSession session) {

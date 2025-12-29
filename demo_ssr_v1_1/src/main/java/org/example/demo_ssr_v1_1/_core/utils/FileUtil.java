@@ -27,7 +27,7 @@ public class FileUtil {
         // 2. 업로드 디렉토리 생성
         // Path : 파일 시스템 경로를 나타내는 객체
         // paths.get() : 문자열 경로를 Path 객체로 변환 시켜주는 메서드
-        Path uploadPath = Paths.get(IMAGES_DIR); // new Path() 내부에서
+        Path uploadPath = Paths.get(uploadDir); // new Path() 내부에서
         // 디렉토리가 있으면 새로운 폴더를 생성하지 않고 없으면 자동 생성
         if (!Files.exists(uploadPath)) {
             // 디렉토리 생성인데 상위 까지 알아서 다 만들어 줌

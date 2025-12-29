@@ -15,6 +15,28 @@ logging:
     com.example: DEBUG   # 내 프로젝트는 DEBUG 이상 모두 출력
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    # 발신자 계정
+    username: gsc06110703@gmail.com
+    # 주의: 일반 구글 로그인 비밀번호 아닙(앱 비밀번호 공백 제거)
+    password: ${EMAIL_SECRET_PASSWORD_KEY}
+    properties:
+      mail:
+        smtp:
+          # SMTP 서버 인증 활성화 (ID/PW 검사 여부)
+          auth: true
+          # START TLS (보안 연결)
+          starttls:
+            # 비 암호화 연결을 암호화 연결(TLS)로 승격 활성화
+            enable: true
+            required: true
+            # 타임 아웃 설정 - 서버간 통신
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
   servlet:
     multipart:
       enabled: true           # 파일 업로드 활성화
@@ -24,7 +46,7 @@ spring:
   # 데이터베이스 연결 설정 (H2 인메모리 데이터베이스)
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myblog?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/myblog?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: root
 
@@ -67,3 +89,10 @@ spring:
     # - false 설정 시 Service 에서 필요한 데이터를 모두 조회 하고 DTO로 변환 해야 함
     open-in-view: false
 
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+
+tenco:
+  key: ${TENCO_KEY}

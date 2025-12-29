@@ -28,11 +28,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${oauth2.kakao.client-id}")
+    @Value("${oauth.kakao.client-id}")
     private String clientId;
 
     @Value("${tenco.key}")
     private String tencoKey;
+
+    @Value("${oauth.kakao.client-secret}")
+    private String clientSecret;
 
     public User 카카오소셜로그인(String code) {
         // 1. 인가 코드로 엑세스 토큰 발급
@@ -67,7 +70,7 @@ public class UserService {
         tokenParams.add("redirect_uri", "http://localhost:8080/user/kakao");
         tokenParams.add("code", code);
         // TODO - env 파일에 옮겨야 함 시크릿키 추가(노출 금지)
-        tokenParams.add("client_secret", "qssI4jlZR4mnYst2NqglRdjO59Z2r1Po");
+        tokenParams.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(tokenParams, tokenHeaders);
 
@@ -303,4 +306,5 @@ public class UserService {
     public void 소셜회원가입(User user) {
         userRepository.save(user);
     }
+
 }
