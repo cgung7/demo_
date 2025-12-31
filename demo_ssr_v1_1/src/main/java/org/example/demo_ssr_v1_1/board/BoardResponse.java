@@ -49,8 +49,11 @@ public class BoardResponse {
         private Long userId;
         private String username;
         private String createdAt;
+        // 로그인한 사용자기 이 게시글을 구매했는지 확인 여부 (단 작성자는 제외)
+        private Boolean premium;
+        private Boolean isPurchased;
 
-        public DetailDTO(Board board) {
+        public DetailDTO(Board board, boolean isPurchase) {
             this.id = board.getId();
             this.title = board.getTitle();
             this.content = board.getContent();
@@ -63,6 +66,10 @@ public class BoardResponse {
             if(board.getCreatedAt() != null) {
                 this.createdAt = MyDateUtil.timestampFormat(board.getCreatedAt());
             }
+            // 유료 게시글
+            this.premium = board.getPremium();
+            // 구매 여부 추가
+            this.isPurchased = isPurchase;
         }
     } // end of class
 

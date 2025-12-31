@@ -3,7 +3,6 @@ package org.example.demo_ssr_v1_1.user;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception401;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +26,16 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+
+    // /user/point/charge
+    @GetMapping("/user/point/charge")
+    public String chargePointForm(Model model, HttpSession session) {
+
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        model.addAttribute("user", sessionUser);
+        return "user/charge-point";
+    }
 
 
     @GetMapping("/user/kakao")
@@ -73,7 +82,6 @@ public class UserController {
         return "user/detail";
     }
 
-
     // 회원 정보 수정 화면 요청
     // http://localhost:8080/user/update
     @GetMapping("/user/update")
@@ -84,7 +92,6 @@ public class UserController {
 
         return "user/update-form";
     }
-
 
     // 회원 정수 수정 기능 요청 - 더티 체킹
     // http://localhost:8080/user/update
@@ -103,8 +110,6 @@ public class UserController {
         }
     }
 
-
-
     // 로그아웃 기능 요청
     // http://localhost:8080/logout
     @GetMapping("/logout")
@@ -121,7 +126,6 @@ public class UserController {
         return "user/login-form";
     }
 
-
     // http://localhost:8080/login
     @PostMapping("/login")
     public String loginProc(UserRequest.LoginDTO loginDTO, HttpSession session) {
@@ -136,9 +140,6 @@ public class UserController {
             return "user/login-form";
         }
     }
-
-
-
 
     // 회원가입 화면 요청
     // http://localhost:8080/join

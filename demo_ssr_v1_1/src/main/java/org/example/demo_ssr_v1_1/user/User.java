@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.demo_ssr_v1_1._core.errors.exception.Exception400;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,7 +26,14 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
+
+    @Column(unique = true)
     private String email;
+
+    // 자신의 포인트 추가
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer point = 0;
 
     @CreationTimestamp
     private Timestamp createdAt;
@@ -62,7 +70,7 @@ public class User {
     @Builder
     public User(Long id, String username, String password,
                 String email, Timestamp createdAt, String profileImage,
-                OAuthProvider provider
+                OAuthProvider provider, Integer point
     ) {
         this.id = id;
         this.username = username;
@@ -78,6 +86,8 @@ public class User {
         } else {
             this.provider = provider;
         }
+
+        this.point = (point != null) ? point : 0;
     }
 
     // 회원정보 수정 비즈니스 로직 추가
@@ -149,5 +159,35 @@ public class User {
         // LOCAL -> true
         // KAKAO -> false
         return this.provider == OAuthProvider.LOCAL;
+    }
+
+    /**
+     * 포인트 차감
+     * @param amount (차감할 포인트)
+     * @throws Exception400 포인트가 부족할 경우
+     */
+    // 포인트 -> 포인트 추가 / 차감
+    public void deductPoint(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw new Exception400("차감할 포인트는 0보다 커야 합니다.");
+        }
+        if (this.point < amount) {
+            throw new Exception400("포인트가 부족합니다. 현재포인트: " + this.point);
+        }
+        this.point -= amount;
+    }
+
+    /**
+     * 포인트 차감
+     * @param amount (포인트)
+     * @throws Exception400 포인트가 부족할 경우
+     */
+    // 포인트 -> 포인트 추가 / 차감
+    public void chargePoint(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw new Exception400("포인트는 0보다 커야 합니다.");
+        }
+
+        this.point += amount;
     }
 }

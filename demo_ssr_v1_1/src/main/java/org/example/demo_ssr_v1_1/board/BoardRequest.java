@@ -13,11 +13,18 @@ public class BoardRequest {
         private String title;
         private String content;
         private String username;
+        // 체크 박스 체크 유무
+        private Boolean premium;
 
         public Board toEntity(User user) {
-            return new Board(title, content, user);
+            return Board.builder()
+                    .title(title)
+                    .content(content)
+                    .user(user)
+                    // 체크 박스 주의
+                    .premium(premium != null ? premium : false)
+                    .build();
         }
-
     }
 
     @Data
@@ -25,6 +32,7 @@ public class BoardRequest {
         private String title;
         private String content;
         private String username;
+        private Boolean premium;
 
         // 검증 메서드
         public void  validate() {
@@ -36,7 +44,5 @@ public class BoardRequest {
                 throw new IllegalArgumentException("내용은 필수 입니다");
             }
         }
-
     }
-
 }

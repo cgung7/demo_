@@ -3,6 +3,7 @@ package org.example.demo_ssr_v1_1.board;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception403;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception404;
+import org.example.demo_ssr_v1_1.purchase.PurchaseService;
 import org.example.demo_ssr_v1_1.reply.ReplyRepository;
 import org.example.demo_ssr_v1_1.user.User;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
+    private final PurchaseService purchaseService;
 
     /**
      * 게시글 목록 조회 (페이징 처리)
@@ -88,12 +90,21 @@ public class BoardService {
 //        //return dotList;
 //    }
 
-    public BoardResponse.DetailDTO 게시글상세조회(Long boardId) {
+    public BoardResponse.DetailDTO 게시글상세조회(Long boardId, Long userId) {
 
         Board board = boardRepository.findByIdWithUser(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없어요"));
 
-        return new BoardResponse.DetailDTO(board);
+        // board 유료/무료 저장 중 (premium 컬럼으로)
+
+        // 구매여부 확인 (로그인한 사용자가 있는 경우 확인 가능)
+        boolean isPurchased = false;
+        if (userId != null) {
+            // 구매 했다면 true 반환 아니면 false
+            isPurchased = purchaseService.구매여부확인(userId, boardId);
+        }
+
+        return new BoardResponse.DetailDTO(board, isPurchased);
     }
 
     // 1. 트랜잭션 처리
