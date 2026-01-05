@@ -133,8 +133,16 @@
                                     // 결제 종료 시 호출되는 콜백 함수
                                     // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
                                     // 결제 결과를 처리하는 로직을 작성합니다.
-                                    if (response.success()) {
-                                    alert("포트원에서만 결제 성공. 단, 우리 서버에서 검증해야 함")
+                                    if (response.success) {
+                                        // 일반 결제
+                                        // alert("포트원에서만 결제 성공. 단, 우리 서버에서 검증해야 함");
+                                        // 포트원 결제 고유 번호
+                                        // 우리서버에서 만들었던 주문번호(고유)
+                                        // 우리 서버에 검증 요청 및 포인트 충전 ...
+
+                                        // 확인하는 과정이 필요
+                                        console.log(response);
+                                        verifyPayment(response.imp_uid, response.merchant_uid)
                                     } else {
                                         alert("결제에 실패했습니다.\n에러내용" + response.error.message)
                                     }
@@ -146,8 +154,40 @@
                     })
         });
 
+        // 5. 서버 검증 함수 (최종 승인)
+        function verifyPayment(imp_uid, merchant_uid) {
+            fetch("/api/payment/verify", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                // JSON.stringify: String 형식으로 변환 코드
+                body: JSON.stringify({
+                    impUid: imp_uid,
+                    merchantUid: merchant_uid
+                })
+            }).then(res => {
 
+                if (!res.ok) {
+                    // 200 ~ 299가 아닌 값이 들어왔을 때 처리
+                    return res.json().then((e) => {
+                        // 아래 catch 구문으로 잡힘
+                        throw new Error(e.message);
+                    });
+                }
+                // 성공
+                // 상자를 뜯어 내용물(JSON 문자열)을 꺼내서 json Object로 변환
+                return res.json();
+            })
+                    .then(data => {
+                        // 모든 검증 통과 (서버단에서 포인트 충전 완료)
+                        alert(`충전이 완료되었습니다.\n충전된 금액:${data.amount}`);
+                        location.href = '/user/detail';
+                    })
+                    .catch(err => {
+                        alert('결제 검증에 실패했습니다.\n관리자에게 문의하세요.');
+                    });
+        }
     }); // end of DOMContentLoaded
+
 </script>
 
 {{> layout/footer}}
