@@ -72,29 +72,50 @@ public class PaymentResponse {
     @Data
     public static class ListDTO {
         private Long id;
-        private String impUid;
-        private String merchantUid;
+        private String impUid; // 포트원 결제 고유 번호
+        private String merchantUid; // 주문 번호
         private Integer price;
-        private String paymentAt;
+        private String paymentAt; // private String paidAt;
+        // 화면에 보여질 상태 표시명
         private String status;
+        private String statusDisplay; // +
 
         public ListDTO(Payment payment) {
+            // 강사님 코드
             this.id = payment.getId();
+            this.impUid = payment.getImpUid();
+            this.merchantUid = payment.getMerchantUid();
             this.price = payment.getAmount();
+            this.status = payment.getStatus();
 
+            // 상태 표시명 변환
+            if ("paid".equals(payment.getStatus())) {
+                this.statusDisplay = "결제완료";
+            } else {
+                this.statusDisplay = "환불완료";
+            }
+
+            // 날짜 포멧팅
             if (payment.getTimestamp() != null) {
                 this.paymentAt = MyDateUtil.timestampFormat(payment.getTimestamp());
             }
-
-            if (payment.getImpUid() != null || payment.getMerchantUid() != null) {
-                this.impUid = payment.getImpUid();
-                this.merchantUid = payment.getMerchantUid();
-                if ("paid".equalsIgnoreCase(payment.getStatus())) {
-                    this.status = "결제완료";
-                } else {
-                    this.status = "결제실패";
-                }
-            }
+//            나의 코드
+//            this.id = payment.getId();
+//            this.price = payment.getAmount();
+//
+//            if (payment.getTimestamp() != null) {
+//                this.paymentAt = MyDateUtil.timestampFormat(payment.getTimestamp());
+//            }
+//
+//            if (payment.getImpUid() != null || payment.getMerchantUid() != null) {
+//                this.impUid = payment.getImpUid();
+//                this.merchantUid = payment.getMerchantUid();
+//                if ("paid".equalsIgnoreCase(payment.getStatus())) {
+//                    this.status = "결제완료";
+//                } else {
+//                    this.status = "결제실패";
+//                }
+//            }
         }
 
     }

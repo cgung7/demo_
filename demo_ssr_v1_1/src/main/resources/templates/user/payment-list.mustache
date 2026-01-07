@@ -9,28 +9,57 @@
         <div class="card-body">
 
             <!-- 내부 카드(card-body) -->
+            <!--     내가 한 코드      -->
+            <!--                <div class="card-body">-->
+            <!--                    <div class="d-flex justify-content-between align-items-center mb-2">-->
+            <!--                        <h5 class="card-title mb-0">-->
+            <!--                            <i class="fa-solid fa-dollar-sign"></i> 결제 # {id}}-->
+            <!--                        </h5>-->
+            <!--                        <span class="badge bg-primary fs-6">+{price}}</span>-->
+            <!--                    </div>-->
+            <!--                    <br>-->
+            <!--                    <p class="text-muted mb-2">-->
+            <!--                        <i class="fa-solid fa-receipt"></i> 주문번호: {impUid}}-->
+            <!--                    </p>-->
+            <!--                    <p class="text-muted mb-2">-->
+            <!--                        <i class="fa-solid fa-key"></i> 결제번호: {merchantUid}}-->
+            <!--                    </p>-->
+            <!--                    <p class="text-muted mb-2">-->
+            <!--                        <i class="fa-solid fa-calendar-days"></i> 결제일: {paymentAt}}-->
+            <!--                    </p>-->
+            <!--                    <p class="text-muted mb-2">-->
+            <!--                        <i class="fa-solid fa-circle-info"></i> 상태:-->
+            <!--                        <span class="badge bg-success fs-6">{status}}</span>-->
+            <!--                    </p>-->
+            <!--                </div>-->
+
             {{#paymentList}}
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="card-title mb-0">
-                            <i class="fa-solid fa-dollar-sign"></i> 결제 # {{id}}
-                        </h5>
-                        <span class="badge bg-primary fs-6">+{{price}}</span>
+                    <div class="d-flex">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-2"><i class="fa-solid fa-dollar-sign"></i> 결제 # {{id}}</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fa-solid fa-receipt"></i> 주문번호: {{impUid}}
+                            </p>
+                            <p class="text-muted mb-2">
+                                <i class="fa-solid fa-key"></i> 결제번호: {{merchantUid}}
+                            </p>
+                            <p class="text-muted mb-2">
+                                <i class="fa-solid fa-calendar-days"></i> 결제일: {{paymentAt}}
+                            </p>
+                            <p class="text-muted mb-2">
+                                <i class="fa-solid fa-circle-info"></i> 상태:
+                                <span class="badge bg-success fs-6">{{statusDisplay}}</span>
+<!--                                <span class="badge bg-success fs-6">{status}}</span>-->
+                            </p>
+                        </div>
+
+
+                        <div class="text-end">
+                            <span class="badge bg-primary fs-6">+{{price}}</span>
+                        </div>
                     </div>
-                    <br>
-                    <p class="text-muted mb-2">
-                        <i class="fa-solid fa-receipt"></i> 주문번호: {{impUid}}
-                    </p>
-                    <p class="text-muted mb-2">
-                        <i class="fa-solid fa-key"></i> 결제번호: {{merchantUid}}
-                    </p>
-                    <p class="text-muted mb-2">
-                        <i class="fa-solid fa-calendar-days"></i> 결제일: {{paymentAt}}
-                    </p>
-                    <p class="text-muted mb-2">
-                        <i class="fa-solid fa-circle-info"></i> 상태:
-                        <span class="badge bg-success fs-6">{{status}}</span>
-                    </p>
+
                 </div>
             {{/paymentList}}
             <!-- 유료 결제 내역이 없을 경우 -->
@@ -43,9 +72,11 @@
                     <a href="/user/point/charge" class="btn btn-primary">결제 페이지로</a>
                 </div>
             {{/paymentList}}
+
             <div class="mt-4">
                 <a href="/user/detail" class="btn btn-secondary">회원 정보로 돌아가기</a>
             </div>
+
         </div>
     </div>
 </div>

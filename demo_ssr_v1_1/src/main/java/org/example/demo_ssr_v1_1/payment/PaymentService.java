@@ -179,6 +179,8 @@ public class PaymentService {
     public List<PaymentResponse.ListDTO> 결제내역조회(Long userId) {
         List<Payment> paymentList =
                 paymentRepository.findByUserIdWithPayment(userId);
+//        List<Payment> paymentList =
+//                paymentRepository.findAllByUserId(userId);
 
         return paymentList.stream()
                 .map(PaymentResponse.ListDTO::new)
