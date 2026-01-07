@@ -3,8 +3,7 @@ package org.example.demo_ssr_v1_1.payment;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
-
-import javax.imageio.ImageTranscoder;
+import org.example.demo_ssr_v1_1._core.utils.MyDateUtil;
 
 public class PaymentResponse {
 
@@ -68,5 +67,35 @@ public class PaymentResponse {
             private String status;
             private Long paidAt;
         }
+    }
+
+    @Data
+    public static class ListDTO {
+        private Long id;
+        private String impUid;
+        private String merchantUid;
+        private Integer price;
+        private String paymentAt;
+        private String status;
+
+        public ListDTO(Payment payment) {
+            this.id = payment.getId();
+            this.price = payment.getAmount();
+
+            if (payment.getTimestamp() != null) {
+                this.paymentAt = MyDateUtil.timestampFormat(payment.getTimestamp());
+            }
+
+            if (payment.getImpUid() != null || payment.getMerchantUid() != null) {
+                this.impUid = payment.getImpUid();
+                this.merchantUid = payment.getMerchantUid();
+                if ("paid".equalsIgnoreCase(payment.getStatus())) {
+                    this.status = "결제완료";
+                } else {
+                    this.status = "결제실패";
+                }
+            }
+        }
+
     }
 }
