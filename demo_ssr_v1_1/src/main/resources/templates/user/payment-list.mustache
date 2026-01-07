@@ -32,7 +32,6 @@
             <!--                        <span class="badge bg-success fs-6">{status}}</span>-->
             <!--                    </p>-->
             <!--                </div>-->
-
             {{#paymentList}}
                 <div class="card-body">
                     <div class="d-flex">
@@ -50,16 +49,17 @@
                             <p class="text-muted mb-2">
                                 <i class="fa-solid fa-circle-info"></i> 상태:
                                 <span class="badge bg-success fs-6">{{statusDisplay}}</span>
-<!--                                <span class="badge bg-success fs-6">{status}}</span>-->
+                                <!-- <span class="badge bg-success fs-6">{status}}</span>-->
                             </p>
                         </div>
-
-
                         <div class="text-end">
                             <span class="badge bg-primary fs-6">+{{price}}</span>
+                            <br>
+                        {{#isRefundable}}
+                                <a href="/refund/request/1" class="btn btn-outline-danger btn-sm">환불하기</a>
+                        {{/isRefundable}}
                         </div>
                     </div>
-
                 </div>
             {{/paymentList}}
             <!-- 유료 결제 내역이 없을 경우 -->

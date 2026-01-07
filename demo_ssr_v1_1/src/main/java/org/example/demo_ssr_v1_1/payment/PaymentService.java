@@ -3,6 +3,8 @@ package org.example.demo_ssr_v1_1.payment;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception400;
 import org.example.demo_ssr_v1_1._core.errors.exception.Exception404;
+import org.example.demo_ssr_v1_1.refund.RefundRequest;
+import org.example.demo_ssr_v1_1.refund.RefundRequestRepository;
 import org.example.demo_ssr_v1_1.user.User;
 import org.example.demo_ssr_v1_1.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +22,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final RefundRequestRepository refundRequestRepository;
 
     @Value("${portone.imp-key}")
     private String impKey;
@@ -176,14 +176,58 @@ public class PaymentService {
         }
     }
 
+
+    // 결제 내역 목록 조회
+    // + 환불 요청 상태 확인 후 isRefundable를 결정
+    // - 결제 상태가 paid -> 환불 요청이 없는 상태
+    // - 결제 상태가 paid -> 환불 요청 대기 중 or 승인 완료
+    // - 결제 상태가 cancelled 인 경우 -> 이미 관리자가 거절 or 환불불가)
     public List<PaymentResponse.ListDTO> 결제내역조회(Long userId) {
-        List<Payment> paymentList =
-                paymentRepository.findByUserIdWithPayment(userId);
+
+        // 강사님 코드
 //        List<Payment> paymentList =
 //                paymentRepository.findAllByUserId(userId);
 
+        List<Payment> paymentList =
+                paymentRepository.findByUserIdWithPayment(userId);
+
         return paymentList.stream()
-                .map(PaymentResponse.ListDTO::new)
-                .toList();
+                .map(payment -> {
+                    // 환불 요청 조회
+                    // 결제 PK 값으로 환불 테이블에 이력 유무 조회
+                    Optional<RefundRequest> refundRequestOpt
+                            = refundRequestRepository.findByPaymentId(payment.getId());
+
+                    // 환불 요청이 있는 경우 상태 확인
+                    // 요청이 있을 경우 true ---> 화면에 환불 요청 버튼 X
+                    boolean hasRefundRequest = refundRequestOpt.isPresent();
+                    boolean isRefundable = false;
+
+                    if ("paid".equals(payment.getStatus())) {
+                        // 1. 결제 완료인 상태 확인
+                        if (!hasRefundRequest) {
+                            // 환불 요청이 없는 경우 환불 가능
+                            isRefundable = true;
+                        } else {
+                            // 환불 요청 대기 상태 -> 원래 false 즉, 화면에 버튼 비활성화
+                            RefundRequest refundRequest = refundRequestOpt.get();
+                            // 관리자가 환불 거절했지만 다시 사용자가 요청 시
+                            if (refundRequest.isRejected()) {
+                                isRefundable = true;
+                            } else {
+                                // 대기중 or 환불 완료
+                                isRefundable = false;
+                            }
+                        }
+                    } else {
+                        // 환불 완료 상태 (돈 내어줌)
+                        isRefundable = false;
+                    }
+                    return new PaymentResponse.ListDTO(payment, isRefundable);
+                }).toList();
+
+//        return paymentList.stream()
+//                .map(PaymentResponse.ListDTO::new)
+//                .toList();
     }
 }

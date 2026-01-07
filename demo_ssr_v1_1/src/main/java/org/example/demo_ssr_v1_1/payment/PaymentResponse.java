@@ -80,13 +80,16 @@ public class PaymentResponse {
         private String status;
         private String statusDisplay; // +
 
-        public ListDTO(Payment payment) {
+        private Boolean isRefundable; // 환불 가능 여부 (화면에 표시)
+
+        public ListDTO(Payment payment, Boolean isRefundable) {
             // 강사님 코드
             this.id = payment.getId();
             this.impUid = payment.getImpUid();
             this.merchantUid = payment.getMerchantUid();
             this.price = payment.getAmount();
             this.status = payment.getStatus();
+            this.isRefundable = isRefundable != null ? isRefundable : false;
 
             // 상태 표시명 변환
             if ("paid".equals(payment.getStatus())) {
