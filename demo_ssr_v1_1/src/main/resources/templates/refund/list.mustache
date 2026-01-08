@@ -1,0 +1,46 @@
+{{> layout/header}}
+
+<div class="container p-5">
+    <div class="card">
+        <div class="card-header mb-0">
+            <h4><b>환불 요청 내역(Me)</b></h4>
+        </div>
+        <!-- 외부 카드 -->
+        <div class="card-body">
+            {{#refundList}}
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-2"><i class="fa-solid fa-dollar-sign"></i> 환불 요청 {{id}}</h5>
+                        <p class="text-muted mb-2">
+                            <i class="fa-solid fa-receipt"></i> 결제 ID : {{paymentId}}
+                        </p>
+                        <p class="text-muted mb-2">
+                            <i class="fa-solid fa-key"></i> 환불 금액 : {{amount}} P
+                        </p>
+                        <p class="text-muted mb-2">
+                            <i class="fa-solid fa-calendar-days"></i> 환불 사유 : {{reason}}
+                        </p>
+
+                        <p class="text-muted mb-2">
+                            {{#isPending}}
+                                <i class="fa-solid fa-circle-info"></i><span class="badge bg-warning">{{statusDisplay}}</span>
+                            {{/isPending}}
+                            {{#isApproved}}
+                                <i class="fa-solid fa-circle-info"></i><span class="badge bg-success">{{statusDisplay}}</span>
+                            {{/isApproved}}
+                            {{#isRejected}}
+                                <i class="fa-solid fa-circle-info"></i><span class="badge bg-danger">{{statusDisplay}}</span>
+                                <p class="text-muted mb-2">
+                                    <span class="text-danger">거절 사유 : {{rejectReason}}</span>
+                                </p>
+                            {{/isRejected}}
+                        </p>
+                    </div>
+                </div>
+            {{/refundList}}
+        </div>
+    </div>
+</div>
+
+
+{{> layout/footer}}

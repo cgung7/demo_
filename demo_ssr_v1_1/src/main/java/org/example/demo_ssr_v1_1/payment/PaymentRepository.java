@@ -19,6 +19,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT COUNT(p) > 0 FROM Payment p WHERE p.merchantUid = :merchantUid")
     boolean existsByMerchantUid(@Param("merchantUid") String merchantUid);
 
+    // 강사님 답안:
+//    @Query("""
+//        SELECT p FROM Payment p
+//        WHERE p.user.id = :userId
+//        ORDER BY p.timestamp DESC
+// """)
+// List<Payment> findAllByUserId(@Param("userId") Long userId);
 
     @Query("""
         SELECT p FROM Payment p
@@ -28,11 +35,10 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 """)
     List<Payment> findByUserIdWithPayment(@Param("userId") Long userId);
 
-    // 강사님 답안:
-//    @Query("""
-//        SELECT p FROM Payment p
-//        WHERE p.user.id = :userId
-//        ORDER BY p.timestamp DESC
-// """)
-// List<Payment> findAllByUserId(@Param("userId") Long userId);
+    @Query("""
+                    SELECT p FROM  Payment p
+                    JOIN FETCH p.user u
+                    WHERE p.id = :id
+            """)
+    Payment findByIdWithUser(@Param("id") Long paymentId);
 }

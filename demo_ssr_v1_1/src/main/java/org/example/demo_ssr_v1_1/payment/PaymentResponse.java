@@ -121,5 +121,8 @@ public class PaymentResponse {
 //            }
         }
 
+        public ListDTO(Payment payment) {
+            this(payment, "paid".equals(payment.getStatus()));
+        }
     }
 }
