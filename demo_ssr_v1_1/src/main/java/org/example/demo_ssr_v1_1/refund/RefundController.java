@@ -41,7 +41,6 @@ public class RefundController {
 
     // 환불 요청 기능 (사용자)
     @PostMapping("/refund/request")
-    @ResponseBody
     public String refundRequest(RefundRequestDTO.RequestDTO reqDTO,
                                 HttpSession session
     ) {
