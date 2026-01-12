@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Spring MVC 설정 클래스
- * @C, @S, @R, @Com.., @Configuration
+ * @C, @S, @R, @Com..., @Configuration
  */
 // @Component 클래스 내부에서 @Bean 어노테이션을 사용해야 된다면 @Configuration 사용해야 한다.
 @Configuration // 내부도 IoC 대상 여부 확인
